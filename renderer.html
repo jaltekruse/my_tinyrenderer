@@ -17,13 +17,15 @@ function page_load() {
 	if (canvas.getContext) {
 		ctx = canvas.getContext("2d");	
 		draw_world(ctx);
-		load_obj(ctx);
+		load_obj(ctx, "diablo3_pose.obj");
+		//load_obj(ctx, "african_head.obj");
+		//load_obj(ctx, "body.obj");
 	}
 }
 
-function load_obj(ctx) {
+function load_obj(ctx, location) {
 	var xhr = new XMLHttpRequest();
-	xhr.open('get', 'african_head.obj');
+	xhr.open('get', location);
 	xhr.onload = function() {
 		if (this.readyState === 4) {
 			if (this.status == 200) {
@@ -117,12 +119,20 @@ function test_lines(ctx) {
 		draw_line(ctx, 50, 300, 450, 300.1);
 }
 
+function draw_line(ctx, x0, y0, x1, y1) {
+	ctx.beginPath();
+	ctx.moveTo(x0, height - y0);
+	ctx.lineTo(x1, height - y1);
+	ctx.stroke();
+
+}
+
 
 // the tutorial had a much more complicated function, needint to swap the points
 // depedending on which was further left, and a special case for stepp
 // this seems to work for every edgecase I can think of right now, maybe perf is not
 // great but I'll stick with this for now
-function draw_line(ctx, x0, y0, x1, y1) {
+function draw_line_final(ctx, x0, y0, x1, y1) {
 	let slope = (y1 - y0) / (x1 - x0);
 	drawPixel(ctx, x0, y0);
 	drawPixel(ctx, x1, y1);
