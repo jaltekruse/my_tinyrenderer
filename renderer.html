@@ -1,0 +1,103 @@
+<html>
+<title> Renderer </title>
+<head>
+<script type="text/javascript">
+
+function page_load() {
+	draw_world();
+}
+
+function draw_world(){
+	var canvas = document.getElementById("game_canvas");
+	if (canvas.getContext) {
+		ctx = canvas.getContext("2d");	
+
+		ctx.fillStyle = "rgb(230, 230, 255)";
+		ctx.fillRect(0,0, 500, 500);
+		
+		ctx.fillStyle = "rgb(130, 130, 55)";
+		ctx.fillRect(100,200, 1, 1);
+		
+		test_lines(ctx);
+	}
+}
+
+function test_lines(ctx) {
+		draw_line(ctx, 13, 20, 80, 40);
+		draw_line(ctx, 20, 13, 40, 80); 
+		draw_line(ctx, 95, 40, 28, 20);
+
+		// vert 
+		draw_line(ctx, 270, 300, 270, 450);
+
+		// steep nearly horizontal
+		draw_line(ctx, 250, 300, 250.1, 450);
+	
+		draw_line(ctx, 250, 300, 300, 450);
+		draw_line(ctx, 50, 300, 450, 250);
+
+		draw_line(ctx, 450, 55, 305, 250);
+
+		//vertical
+		draw_line(ctx, 50, 320, 450, 320);
+
+		// steep nearly vertical 
+		draw_line(ctx, 50, 300, 450, 300.1);
+}
+
+
+// the tutorial had a much more complicated function, needint to swap the points
+// depedending on which was further left, and a special case for stepp
+// this seems to work for every edgecase I can think of right now, maybe perf is not
+// great but I'll stick with this for now
+function draw_line(ctx, x0, y0, x1, y1) {
+	let slope = (y1 - y0) / (x1 - x0);
+	console.log(slope);
+	ctx.fillRect(x0, y0, 1, 1);
+	ctx.fillRect(x1, y1, 1, 1);
+	let dist =  Math.sqrt(Math.pow(y1-y0, 2) + Math.pow(x1-x0, 2));
+	let step = 1 / dist;
+	//step = 0.01;
+	console.log(dist, step);
+    for (let t = 0; t < 1; t += step) { 
+        let x = x0 + (x1 - x0) * t; 
+        let y = y0 + (y1 - y0) * t; 
+        ctx.fillRect(x, y, 1, 1);
+    }
+}
+
+
+// really slow with nearly vertical or horizontal lines
+function draw_line_attempt2(ctx, x0, y0, x1, y1) {
+	let slope = (y1 - y0) / (x1 - x0);
+	console.log(slope);
+	ctx.fillRect(x0, y0, 1, 1);
+	ctx.fillRect(x1, y1, 1, 1);
+	tStep = Math.abs(slope) > 1 ? 0.03 / Math.abs(slope) : 0.03 * Math.abs(slope);
+    for (let t = 0; t < 1; t += tStep) { 
+		console.log(t);
+        let x = x0 + (x1 - x0) * t; 
+        let y = y0 + (y1 - y0) * t; 
+        ctx.fillRect(x, y, 1, 1);
+    }
+}
+
+function draw_line_orig(ctx, x0, y0, x1, y1) {
+	let slope = (y1 - y0) / (x1 - x0);
+	console.log(slope);
+	ctx.fillRect(x0, y0, 1, 1);
+	ctx.fillRect(x1, y1, 1, 1);
+    for (let t = 0; t < 1; t += .01) { 
+        let x = x0 + (x1 - x0) * t; 
+        let y = y0 + (y1 - y0) * t; 
+        ctx.fillRect(x, y, 1, 1);
+    }
+}
+
+</script>      
+</head>
+<body style="overflow: hidden"  onload="page_load()">
+<span id="header_span"> </span>
+<canvas id="game_canvas" width="500" height="500" />
+</body>
+</html>
