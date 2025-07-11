@@ -9,6 +9,9 @@ https://cdn.jsdelivr.net/npm/obj-file-parser@0.6.2/dist/OBJFile.js
 
 const OBJFile = require("https://cdn.jsdelivr.net/npm/obj-file-parser@0.6.2/dist/OBJFile.js");
 
+const width = 500;
+const height = 500;
+
 function page_load() {
 	var canvas = document.getElementById("game_canvas");
 	if (canvas.getContext) {
@@ -31,8 +34,6 @@ function load_obj(ctx) {
 				console.log(output);
 				const model = output.models[0];
 				//console.log("Faces", model.faces);
-				let width = 500;
-				let height = 500;
 				for (let face of model.faces) {
 					//console.log("face", face);
 
@@ -76,14 +77,19 @@ function load_obj(ctx) {
 	xhr.send();
 }
 
+function drawPixel(ctx, x, y) {
+	ctx.fillRect(x, height - y, 1, 1);
+}
+
 function draw_world(ctx){
 
 	ctx.fillStyle = "rgb(230, 230, 255)";
-	ctx.fillRect(0,0, 500, 500);
+
+	ctx.fillRect(0, 0, width, height);
 	
 	ctx.fillStyle = "rgb(130, 130, 55)";
 	// set single pixel
-	//ctx.fillRect(100,200, 1, 1);
+	//drawPixel(ctx, 100,200);
 	
 	//test_lines(ctx);
 }
@@ -118,8 +124,8 @@ function test_lines(ctx) {
 // great but I'll stick with this for now
 function draw_line(ctx, x0, y0, x1, y1) {
 	let slope = (y1 - y0) / (x1 - x0);
-	ctx.fillRect(x0, y0, 1, 1);
-	ctx.fillRect(x1, y1, 1, 1);
+	drawPixel(ctx, x0, y0);
+	drawPixel(ctx, x1, y1);
 	let dist =  Math.sqrt(Math.pow(y1-y0, 2) + Math.pow(x1-x0, 2));
 	let step = 1 / dist;
 	//step = 0.01;
@@ -127,7 +133,7 @@ function draw_line(ctx, x0, y0, x1, y1) {
     for (let t = 0; t < 1; t += step) { 
         let x = x0 + (x1 - x0) * t; 
         let y = y0 + (y1 - y0) * t; 
-        ctx.fillRect(x, y, 1, 1);
+        drawPixel(ctx, x, y);
     }
 }
 
@@ -136,25 +142,27 @@ function draw_line(ctx, x0, y0, x1, y1) {
 function draw_line_attempt2(ctx, x0, y0, x1, y1) {
 	let slope = (y1 - y0) / (x1 - x0);
 	console.log(slope);
-	ctx.fillRect(x0, y0, 1, 1);
-	ctx.fillRect(x1, y1, 1, 1);
+	drawPixel(ctx, x0, y0);
+	drawPixel(ctx, x1, y1);
 	tStep = Math.abs(slope) > 1 ? 0.03 / Math.abs(slope) : 0.03 * Math.abs(slope);
     for (let t = 0; t < 1; t += tStep) { 
 		console.log(t);
         let x = x0 + (x1 - x0) * t; 
         let y = y0 + (y1 - y0) * t; 
-        ctx.fillRect(x, y, 1, 1);
+        drawPixel(ctx, x, y);
     }
 }
 
+// ctx.fillRect\(([a-z]*[0-9]*,[a-z]*[0-9]*),.*
+
 function draw_line_orig(ctx, x0, y0, x1, y1) {
 	let slope = (y1 - y0) / (x1 - x0);
-	ctx.fillRect(x0, y0, 1, 1);
-	ctx.fillRect(x1, y1, 1, 1);
+	drawPixel(ctx, x0, y0);
+	drawPixel(ctx, x1, y1);
     for (let t = 0; t < 1; t += .01) { 
         let x = x0 + (x1 - x0) * t; 
         let y = y0 + (y1 - y0) * t; 
-        ctx.fillRect(x, y, 1, 1);
+        drawPixel(ctx, x, y);
     }
 }
 
